@@ -1,4 +1,4 @@
-(defproject com.workiva/quartermaster "0.1.0"
+(defproject com.workiva/quartermaster "0.1.1"
   :description "Manages hierarchies of shared resources in a manner both simple and tolerant to failure."
   :url "https://github.com/Workiva/quartermaster"
   :license {:name "Apache License, Version 2.0"}
