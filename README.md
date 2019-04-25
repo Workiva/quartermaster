@@ -6,6 +6,7 @@
 
 - [Overview](#overview)
 - [Basic Functionality (Silly Example)](#basic-functionality-silly-example)
+- [API Documentation](#api-documentation)
 - [SharedResource](#sharedresource)
   * [`(initiate [r])`](#initiate-r)
   * [`(terminate [r])`](#terminate-r)
@@ -143,6 +144,10 @@ This is a silly example in which a `future` stands in for a heavier resource (su
 (assert (= 2 @work-counter))
 
 ```
+
+## API Documentation
+
+[Clojure API documentation can be found here.](/documentation/index.html)
 
 ## SharedResource
 
