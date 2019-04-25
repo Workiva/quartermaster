@@ -221,18 +221,18 @@
   [{:as resource-reference
     :keys [manager user-id description cached-resource on-reacquire]}]
   (locking-when ;; If there are no side-effects, we don't really care about locking.
-      (not (identical? on-reacquire identity)) resource-reference
-    (if-let [resource (.get ^WeakReference @cached-resource)]
-      resource
-      (reacquire-for-reference resource-reference))))
+   (not (identical? on-reacquire identity)) resource-reference
+   (if-let [resource (.get ^WeakReference @cached-resource)]
+     resource
+     (reacquire-for-reference resource-reference))))
 
 (defrecord ResourceReference
-    [manager ;; source of truth!
-     satisfies-shared-resource? ;; boolean
-     cached-resource ;; atom containing a WeakReference to the resource as last known
-     user-id ;; every resource reference is tied to a particular user
-     description ;; description used to acquire this reference
-     on-reacquire] ;; atom containing a side-effecting fn to call on new resource at reacquire
+           [manager ;; source of truth!
+            satisfies-shared-resource? ;; boolean
+            cached-resource ;; atom containing a WeakReference to the resource as last known
+            user-id ;; every resource reference is tied to a particular user
+            description ;; description used to acquire this reference
+            on-reacquire] ;; atom containing a side-effecting fn to call on new resource at reacquire
   SharedResource
   (resource-id [this]
     (when satisfies-shared-resource?
@@ -261,11 +261,11 @@
   (resource [this]
     ;; If there are no side-effects, there's no need to lock here
     (locking-when (not (identical? on-reacquire identity)) this
-      (let [resource (get-resource this)]
-        (if (or (not (satisfies? SharedResource resource))
-                (terminated? resource))
-          (reacquire-for-reference this)
-          resource))))
+                  (let [resource (get-resource this)]
+                    (if (or (not (satisfies? SharedResource resource))
+                            (terminated? resource))
+                      (reacquire-for-reference this)
+                      resource))))
   (resource* [this] (.get ^WeakReference @cached-resource))
   (reinitiate [this]
     (when satisfies-shared-resource?
@@ -344,12 +344,12 @@
       (cond-> resource
         (satisfies? SharedResource resource)
         (as-> resource
-            (try (initiate resource)
-                 (catch Throwable e
-                   (raise-manager-error :initiate-error
-                                        "initiate threw an exception."
-                                        {:rm-id rm-id}
-                                        e))))))))
+              (try (initiate resource)
+                   (catch Throwable e
+                     (raise-manager-error :initiate-error
+                                          "initiate threw an exception."
+                                          {:rm-id rm-id}
+                                          e))))))))
 
 (defn- release-helper
   "Terminates the resource if appropriate. Logs a warning if exception is caught."
@@ -614,15 +614,15 @@
 (def ^:dynamic *always-block-on-release* false)
 
 (defrecord ResourceManager
-    [rm-id ;; used for logging and debugging
-     resources ;; volatile {k --> #ResourceTable[resource, #{ids}]}
-     discriminator ;; var containing function of <user-id, resource-description> -> unique identifier for resource
-     constructor  ;; var containing function of <resource-description, unique-identifier> -> resource
-     terminator ;; var containing function always called on each resource terminated by the resource manager.
-     locks ;; volatile {k --> Object} used for locking
-     construction-timer
-     termination-timer
-     extant-counter]
+           [rm-id ;; used for logging and debugging
+            resources ;; volatile {k --> #ResourceTable[resource, #{ids}]}
+            discriminator ;; var containing function of <user-id, resource-description> -> unique identifier for resource
+            constructor  ;; var containing function of <resource-description, unique-identifier> -> resource
+            terminator ;; var containing function always called on each resource terminated by the resource manager.
+            locks ;; volatile {k --> Object} used for locking
+            construction-timer
+            termination-timer
+            extant-counter]
   SharedResourceManager
   (handle-map [_]
     (into {}
@@ -812,12 +812,12 @@
     `(do (declare ~mgr-name)
          (let [constructor-fn#
                (letfn [(~auto-reinitiater-sym [user-id# input#]
-                        (fn [resource#]
-                          (reinitiate* ~mgr-name user-id# input# (resource-id resource#))))
+                         (fn [resource#]
+                           (reinitiate* ~mgr-name user-id# input# (resource-id resource#))))
                        (~auto-releaser-sym [user-id# input#]
-                        (fn
-                          ([resource# block?#] (release-all* ~mgr-name user-id# input# (resource-id resource#) block?#))
-                          ([resource#] (release-all* ~mgr-name user-id# input# (resource-id resource#)))))]
+                         (fn
+                           ([resource# block?#] (release-all* ~mgr-name user-id# input# (resource-id resource#) block?#))
+                           ([resource#] (release-all* ~mgr-name user-id# input# (resource-id resource#)))))]
                  ;; We evaluate the constructor definition within a scope that provides bindings for the
                  ;; auto-reinitiate var and the auto-release var. See the macros auto-release &
                  ;; auto-reinitiater for the details.
@@ -890,5 +890,5 @@
   block."
   [bindings & body]
   `(guarded-let #(when (satisfies? ResourceHandle %) (release % true))
-       ~bindings
-     ~@body))
+                ~bindings
+                ~@body))
