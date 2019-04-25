@@ -1,5 +1,53 @@
 # Quartermaster
 
+[![Clojars Project](https://img.shields.io/clojars/v/com.workiva/quartermaster.svg)](https://clojars.org/com.workiva/quartermaster) [![CircleCI](https://circleci.com/gh/Workiva/quartermaster/tree/master.svg?style=svg)](https://circleci.com/gh/Workiva/quartermaster/tree/master)
+
+<!-- toc -->
+
+- [Overview](#overview)
+- [Basic Functionality (Silly Example)](#basic-functionality-silly-example)
+- [API Documentation](#api-documentation)
+- [SharedResource](#sharedresource)
+  * [`(initiate [r])`](#initiate-r)
+  * [`(terminate [r])`](#terminate-r)
+  * [`(force-terminate [r])`](#force-terminate-r)
+  * [`(resource-id [r])`](#resource-id-r)
+  * [`(initiated? [r])`](#initiated-r)
+  * [`(status* [r])`](#status-r)
+- [Managing Hierarchies: Resources All the Way Down](#managing-hierarchies-resources-all-the-way-down)
+- [Resource Managers](#resource-managers)
+  * [Construction](#construction)
+    + [`(resource-manager [rm-id discriminate constructor] [rm-id discriminate constructor terminator])`](#resource-manager-rm-id-discriminate-constructor-rm-id-discriminate-constructor-terminator)
+    + [`(defmanager [manager-name & {:as options}])`](#defmanager-manager-name--as-options)
+    + [`(auto-releaser [resource-description] [user-id resource-description])`](#auto-releaser-resource-description-user-id-resource-description)
+    + [`(auto-reinitiater [resource-description] [user-id resource-description])`](#auto-reinitiater-resource-description-user-id-resource-description)
+  * [Protocol Methods](#protocol-methods)
+    + [(acquire [rm user-id description] [rm user-id description on-acquisition])](#acquire-rm-user-id-description-rm-user-id-description-on-acquisition)
+    + [(reacquire [rm user-id description])](#reacquire-rm-user-id-description)
+    + [(handle-map [rm])](#handle-map-rm)
+  * [Manager Metrics](#manager-metrics)
+- [Resource References](#resource-references)
+  * [`SharedResource` protocol](#sharedresource-protocol)
+  * [`ResourceHandle` protocol](#resourcehandle-protocol)
+    + [`(resource [handle])`](#resource-handle)
+    + [`(resource* [handle])`](#resource-handle)
+    + [`(reinitiate [handle] [handle target-resource-id])`](#reinitiate-handle-handle-target-resource-id)
+    + [`(release [handle] [handle block-on-release?])`](#release-handle-handle-block-on-release)
+    + [`(release-all [handle target-resource-id] [handle target-resource-id block-on-release?])`](#release-all-handle-target-resource-id-handle-target-resource-id-block-on-release)
+- [Resource Leaks](#resource-leaks)
+    + [`(acquiring [bindings & body])`](#acquiring-bindings--body)
+- [Mocking & Testing](#mocking--testing)
+    + [`(all-handle-maps)`](#all-handle-maps)
+    + [`(testing-for-resource-leaks [& body])`](#testing-for-resource-leaks--body)
+    + [`(overriding [manager->overrides & body])`](#overriding-manager-overrides--body)
+- [Maintainers and Contributors](#maintainers-and-contributors)
+  * [Active Maintainers](#active-maintainers)
+  * [Previous Contributors](#previous-contributors)
+
+<!-- tocstop -->
+
+## Overview
+
 **Quartermaster** is a small library for managing hierarchies of shared resources in a manner both simple and tolerant to failure.
 
 This model is based on defining ResourceManagers that are *uniquely* responsible for serving requests for the resources they manage. Any process that requires a resource simply requests one from the appropriate resource manager. When the process is finished with the resource, it informs the resource manager that this is the case, so that the resource can be cleaned up, at least if there are no other users. 
@@ -96,6 +144,10 @@ This is a silly example in which a `future` stands in for a heavier resource (su
 (assert (= 2 @work-counter))
 
 ```
+
+## API Documentation
+
+[Clojure API documentation can be found here.](/documentation/index.html)
 
 ## SharedResource
 
@@ -501,13 +553,13 @@ Allows temporary redefinition of one or more resource-manager's parameters (`:di
                ...]
       & body)
 ```
-# Maintainers and Contributors
+## Maintainers and Contributors
 
-## Active Maintainers
+### Active Maintainers
 
 -
 
-## Previous Contributors
+### Previous Contributors
 
 - Timothy Dean <galdre@gmail.com>
 - Houston King <houston.king@workiva.com>

@@ -225,8 +225,8 @@
           time (volatile! nil)]
       (rm/testing-for-resource-leaks
        (time* time
-               (doseq [config configs]
-                 (rm/acquire terminal-resource-manager :testing-1 config)))
+              (doseq [config configs]
+                (rm/acquire terminal-resource-manager :testing-1 config)))
        (is (<= 1000 @time))
        (time* time
               (doseq [config configs]
@@ -602,8 +602,8 @@
        (is (= 1 (count (into #{} terminals))))
        (dotimes [user-id 19]
          (rm/overriding [terminal-resource-manager
-                                        {:terminator
-                                         (fn [_] (swap! termination-counter inc))}]
+                         {:terminator
+                          (fn [_] (swap! termination-counter inc))}]
                         (rm/release* terminal-resource-manager user-id :terminal true)))
        (is (= 0 @termination-counter))
        (rm/overriding [terminal-resource-manager

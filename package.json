@@ -1,0 +1,25 @@
+{
+  "name": "quartermaster",
+  "version": "1.0.0",
+  "description": "Manages hierarchies of shared resources in a manner both simple and tolerant to failure.",
+  "main": "index.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "markdown-toc": "^1.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Workiva/quartermaster.git"
+  },
+  "author": "",
+  "bugs": {
+    "url": "https://github.com/Workiva/quartermaster/issues"
+  },
+  "homepage": "https://github.com/Workiva/quartermaster#readme"
+}
